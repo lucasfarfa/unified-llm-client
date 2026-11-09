@@ -57,7 +57,7 @@ class ModelConfig(BaseModel):
     # Anthropic se valida abajo, en ``check_provider_limits``.
     temperature: float = Field(default=0.7, ge=0.0, le=2.0)
     # ``gt`` = greater than (>). Pedir 0 tokens no tiene sentido.
-    max_tokens: int = Field(default=512, gt=0)
+    max_tokens: int = Field(default=1024, gt=0)
     # ``float | None = None`` significa "opcional": si no se pasa, queda None y
     # el cliente no lo envía a la API (así se usa el default del proveedor).
     top_p: float | None = Field(default=None, ge=0.0, le=1.0)

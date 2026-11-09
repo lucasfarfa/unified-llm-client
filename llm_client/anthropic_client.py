@@ -92,6 +92,12 @@ class AnthropicClient(BaseLLMClient):
              ``messages``: las instrucciones de sistema van en el parámetro
              ``system``. Por eso separamos la lista en dos.
           2. ``max_tokens`` es OBLIGATORIO (en OpenAI es opcional).
+          3. Los modelos Claude vigentes (familia 5.x) NO aceptan ``temperature``,
+             ``top_p`` ni ``top_k``: la documentación oficial indica omitirlos
+             y el SDK 2.x directamente ya no los tiene como parámetros. Por eso
+             NO los enviamos. ``ModelConfig`` igual valida su rango (0..1) para
+             que una config incoherente se detecte temprano y para mantener la
+             misma interfaz que OpenAI.
 
         Args:
             messages: Conversación validada.
@@ -106,13 +112,16 @@ class AnthropicClient(BaseLLMClient):
             "model": self.config.model,
             "messages": chat_messages,
             "max_tokens": self.config.max_tokens,
-            "temperature": self.config.temperature,
+            # Los modelos Claude actuales "piensan" antes de responder
+            # (thinking adaptativo) y esos tokens CUENTAN dentro de max_tokens.
+            # Con ``effort: "low"`` el modelo piensa poco en preguntas simples,
+            # así queda espacio para el texto de la respuesta.
+            "output_config": {"effort": "low"},
         }
         # Si hay varios mensajes system, los unimos en un solo texto.
         if system_parts:
             params["system"] = "\n\n".join(system_parts)
-        if self.config.top_p is not None:
-            params["top_p"] = self.config.top_p
+        # Notá que NO agregamos temperature ni top_p (ver punto 3 del docstring).
         return params
 
     async def generate(self, messages: list[ChatMessage]) -> ModelResponse:

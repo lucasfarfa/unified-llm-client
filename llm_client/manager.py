@@ -137,7 +137,7 @@ class AsyncLLMManager:
                 provider=provider,
                 model=os.getenv(MODEL_ENV_VARS[provider]) or DEFAULT_MODELS[provider],
                 temperature=os.getenv("LLM_TEMPERATURE", "0.7"),
-                max_tokens=os.getenv("LLM_MAX_TOKENS", "512"),
+                max_tokens=os.getenv("LLM_MAX_TOKENS", "1024"),
                 max_retries=os.getenv("LLM_MAX_RETRIES", "2"),
                 timeout=timeout or None,
             )
