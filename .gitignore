@@ -1,5 +1,13 @@
 # Secretos: el .env tiene las API keys y NUNCA se sube al repo.
+# ``.env.*`` cubre variantes (.env.local, .env.prod...); la plantilla sí se sube.
 .env
+.env.*
+!.env.example
+
+# Configuración local de Claude Code: puede guardar permisos, comandos
+# ejecutados y rutas de tu máquina. Es personal, no del proyecto.
+.claude/
+CLAUDE.local.md
 
 # Entornos virtuales
 .venv/
